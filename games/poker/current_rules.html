@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポーカー - 現在のルールと遊び方</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="nav">
+        <a href="../../index.html">トップ</a>
+        <a href="overview.html">概要に戻る</a>
+    </div>
+    <h1>ポーカーの遊び方と現行ルール</h1>
+
+    <div class="card">
+        <h2 class="card-title">遊び方（テキサスホールデム基準）</h2>
+        <p style="font-size: 0.85rem; margin-bottom: 10px; color: var(--text-muted);">※プレイスタイルでドローポーカーを選択している場合は、5枚配られて1回交換する方式になります。（<a href="../../details/poker_play_style.html">プレイスタイルの詳細</a>）</p>
+        <ol class="rule-list" style="margin-top: 15px; padding-left: 20px;">
+            <li><a href="../../details/poker_blinds.html">ブラインド</a>（参加費）を払います。</li>
+            <li>各プレイヤーに2枚のカードが配られます。</li>
+            <li>第1ラウンドの<a href="../../details/poker_actions.html">ベット（賭け）</a>を行います。</li>
+            <li>場に共通のカード（コミュニティカード）が3枚開かれます。</li>
+            <li>第2ラウンドのベットを行います。</li>
+            <li>場に4枚目のカードが開かれ、第3ラウンドのベットを行います。</li>
+            <li>場に5枚目のカードが開かれ、最後のベットを行います。</li>
+            <li><a href="../../details/poker_showdown.html">ショーダウン</a>（手札公開）を行い、一番強い<a href="../../details/poker_hand.html">役</a>を作った人が勝ちます。</li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">役の強さ（クリックで詳細）</h2>
+        <p class="card-desc" style="margin-bottom: 15px;">ポーカーの役一覧です。詳細はボタンから確認してください。</p>
+        <ol class="rule-list" style="padding-left: 20px; font-size: 0.9rem;">
+            <li>ハイカード（ブタ）</li>
+            <li>ワンペア</li>
+            <li>ツーペア</li>
+            <li>スリーオブアカインド（スリーカード）</li>
+            <li>ストレート</li>
+            <li>フラッシュ</li>
+            <li>フルハウス</li>
+            <li>フォーオブアカインド（フォーカード）</li>
+            <li>ストレートフラッシュ</li>
+            <li>ロイヤルストレートフラッシュ</li>
+        </ol>
+        <p style="margin-top: 15px;"><a href="../../details/poker_hand.html" class="btn btn-secondary">役の強さと引き分け判定の詳細を見る</a></p>
+    </div>
+
+    <h2 style="margin-top: 30px;">現在設定されているルール</h2>
+    <div id="current-rules-container"></div>
+
+    <script src="../../app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const game = 'poker';
+            const catData = await loadJSON(`../../data/${game}_categories.json`);
+            const container = document.getElementById('current-rules-container');
+
+            if (catData && catData.categories) {
+                for (const cat of catData.categories) {
+                    const data = await loadJSON(`../../data/${game}_${cat.id}.json`);
+                    if (data && data.rules && data.rules.length > 0) {
+                        const validRules = data.rules.filter(rule => {
+                            if (!rule.visible) return false;
+                            const customDef = getDefaultRule(game, rule.id);
+                            const fallback = customDef !== undefined ? customDef : rule.default;
+                            const value = getRule(game, rule.id) !== undefined ? getRule(game, rule.id) : fallback;
+                            if (value === false || value === "なし") return false;
+                            return true;
+                        });
+
+                        if (validRules.length === 0) continue;
+
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        
+                        const title = document.createElement('h2');
+                        title.className = 'card-title';
+                        title.textContent = `【${cat.name}】`;
+                        title.style.borderBottom = '1px solid var(--border-color)';
+                        title.style.paddingBottom = '10px';
+                        title.style.marginBottom = '15px';
+                        card.appendChild(title);
+
+                        const ul = document.createElement('ul');
+                        ul.className = 'rule-list';
+
+                        validRules.forEach(rule => {
+                            const customDef = getDefaultRule(game, rule.id);
+                            const fallback = customDef !== undefined ? customDef : rule.default;
+                            const value = getRule(game, rule.id) !== undefined ? getRule(game, rule.id) : fallback;
+                            
+                            const li = document.createElement('li');
+                            li.style.marginBottom = '15px';
+                            
+                            let displayValue = "";
+                            if (rule.type === 'boolean') {
+                                displayValue = "あり (ON)";
+                            } else {
+                                displayValue = value;
+                            }
+
+                            li.innerHTML = `
+                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                    <strong>${rule.name}: <span style="color: var(--accent-gold);">${displayValue}</span></strong>
+                                    <a href="${rule.detail}" style="font-size: 0.8rem; border: 1px solid var(--accent-green); padding: 2px 5px; border-radius: 3px;">詳細</a>
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">${rule.desc}</div>
+                            `;
+                            ul.appendChild(li);
+                        });
+                        card.appendChild(ul);
+                        container.appendChild(card);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポーカー - 役の強さ詳細</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="nav">
+        <a href="#" id="back-btn">戻る</a>
+        <a href="../index.html">トップ</a>
+    </div>
+    <h1>役の強さ（ランキング）</h1>
+    <div class="card">
+        <h2 class="card-title">役一覧（弱い順）</h2>
+        <p class="card-desc">ポーカーの役一覧です。下にいくほど強く、出現確率が低くなります。</p>
+        <ol class="rule-list" style="margin-top: 15px; padding-left: 20px;">
+            <li><b>ハイカード（役なし）:</b> いわゆるブタ。何も役がない状態。一番大きい数字で勝負します。</li>
+            <li><b>ワンペア:</b> 同じ数字のカードが2枚。</li>
+            <li><b>ツーペア:</b> 同じ数字のペアが2組。</li>
+            <li><b>スリーオブアカインド（スリーカード）:</b> 同じ数字のカードが3枚。</li>
+            <li><b>ストレート:</b> 5枚の数字が連番になっている。（例：5,6,7,8,9）※AはKとも2とも繋がりますが、Q,K,A,2,3のような跨ぎはできません。</li>
+            <li><b>フラッシュ:</b> 5枚すべてが同じマーク。数字はバラバラでOK。</li>
+            <li><b>フルハウス:</b> スリーペア＋ワンペアの組み合わせ。</li>
+            <li><b>フォーオブアカインド（フォーカード）:</b> 同じ数字が4枚。</li>
+            <li><b>ストレートフラッシュ:</b> 同じマークで、かつ5枚が連番。</li>
+            <li><b>ロイヤルストレートフラッシュ:</b> 同じマークで「10, J, Q, K, A」の連番。ポーカー最強の役です。</li>
+        </ol>
+    </div>
+    <div class="card">
+        <h2 class="card-title">引き分け（キッカー）の判定</h2>
+        <p class="card-desc">同じ役の人がいた場合の勝敗のつけ方です。</p>
+        <ul class="rule-list" style="margin-top: 15px;">
+            <li>基本的には「役を構成する数字」が大きい方が勝ちます。（例: 10のワンペア vs 8のワンペア なら10が勝ち）</li>
+            <li>役の数字も全く同じ場合、役に関係ない残りカード（キッカー）の中で一番数字が大きい人が勝ちます。</li>
+            <li>マークの強さで勝敗を決めるのはローカルルールであり、公式ではマークによる強弱はありません（完全に同じなら引き分けとなり、チップは等分されます）。</li>
+        </ul>
+    </div>
+    <script src="../app.js"></script>
+</body>
+</html>

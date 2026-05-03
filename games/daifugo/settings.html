@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大富豪 - 設定一覧</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="nav">
+        <a href="categories.html" id="back-btn">戻る</a>
+        <a href="../../index.html">トップ</a>
+    </div>
+    <h1>大富豪のデフォルト設定</h1>
+    <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted); text-align: center;">
+        ここで設定した内容は、この端末での基本のルール（ハウスルール）として保存されます。
+    </p>
+    <div id="settings-container"></div>
+    <script src="../../app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const game = getGameName();
+            const catData = await loadJSON(`../../data/${game}_categories.json`);
+            const container = document.getElementById('settings-container');
+
+            if (catData && catData.categories) {
+                for (const cat of catData.categories) {
+                    const data = await loadJSON(`../../data/${game}_${cat.id}.json`);
+                    if (data && data.rules && data.rules.length > 0) {
+                        const hasVisibleRules = data.rules.some(r => r.visible);
+                        if (!hasVisibleRules) continue;
+
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        
+                        const title = document.createElement('h2');
+                        title.className = 'card-title';
+                        title.textContent = `【${cat.name}】`;
+                        card.appendChild(title);
+
+                        data.rules.forEach(rule => {
+                            if (!rule.visible) return;
+                            
+                            // 階段革命の条件：階段ルールがオンの時だけ表示
+                            if (rule.id === 'stairs_kakumei') {
+                                const customDef = getDefaultRule(game, 'stairs');
+                                const stairsValue = customDef !== undefined ? customDef : true; // default true
+                                if (stairsValue === false || stairsValue === "なし") return;
+                            }
+
+                            const control = createRuleControl(game, rule, true);
+                            card.appendChild(control);
+                        });
+
+                        container.appendChild(card);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

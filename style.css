@@ -1,0 +1,243 @@
+:root {
+  --bg-color: #0d1b2a; /* Dark blue/black */
+  --card-bg: #1b263b;
+  --text-main: #e0e1dd;
+  --text-muted: #778da9;
+  --accent-gold: #f4d03f;
+  --accent-red: #e63946;
+  --accent-green: #2a9d8f;
+  --border-color: #415a77;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  line-height: 1.6;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h1, h2, h3 {
+  color: var(--accent-gold);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.8rem;
+  border-bottom: 2px solid var(--accent-gold);
+  padding-bottom: 10px;
+  margin-bottom: 25px;
+}
+
+a {
+  color: var(--accent-green);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Layout and Cards */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 0.4s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-title {
+    color: var(--accent-gold);
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.card-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    background-color: var(--accent-green);
+    color: #000;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 2px solid var(--accent-green);
+    transition: all 0.2s ease-out;
+}
+
+.btn:hover {
+    background-color: transparent;
+    color: var(--accent-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,255,102,0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: var(--text-main);
+    box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+}
+
+.btn-danger {
+    background-color: transparent;
+    color: #ff4d4d;
+    border-color: #ff4d4d;
+}
+
+.btn-danger:hover {
+    background-color: rgba(255,77,77,0.1);
+    box-shadow: 0 4px 8px rgba(255,77,77,0.2);
+}
+
+/* Navigation */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.nav a {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+/* Form Elements */
+.form-group {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-color);
+  padding-top: 10px;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+}
+
+select {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 5px;
+  border-radius: 4px;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--accent-green);
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Error UI */
+.error-ui {
+  display: none;
+  background-color: var(--accent-red);
+  color: white;
+  padding: 10px;
+  text-align: center;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Rule Details List */
+ul.rule-list {
+  list-style: none;
+}
+ul.rule-list li {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+ul.rule-list li::before {
+  content: '♠';
+  position: absolute;
+  left: 0;
+  color: var(--accent-gold);
+}
+.daifugo-list li::before {
+  content: '♦';
+}

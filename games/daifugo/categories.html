@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大富豪 - カテゴリ</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+    <div class="nav">
+        <a href="guide.html" id="back-btn">戻る</a>
+        <a href="../../index.html">トップ</a>
+    </div>
+    <h1>ルールカテゴリ</h1>
+    
+    <div id="categories-container">
+        <!-- JSで描画 -->
+    </div>
+
+    <div class="card" style="margin-top: 30px; border-color: #ff4d4d;">
+        <h2 class="card-title" style="color: #ff4d4d; border-bottom-color: #ff4d4d;">初期化（リセット）</h2>
+        <p class="card-desc" style="margin-bottom: 15px;">
+            現在変更されている設定をすべて削除し、アプリのデフォルト設定に戻します。<br>
+            ※この操作は取り消せません。
+        </p>
+        <button class="btn btn-danger" onclick="resetRules('daifugo')">デフォルト設定に戻す</button>
+    </div>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="settings.html" style="color: var(--text-muted); font-size: 0.9rem; text-decoration: underline;">この端末のデフォルト設定を変更する</a>
+    </div>
+    
+    <script src="../../app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('categories-container');
+            const data = await loadJSON('../../data/daifugo_categories.json');
+            
+            if (data && data.categories) {
+                data.categories.forEach(cat => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.style.cursor = 'pointer';
+                    card.onclick = () => window.location.href = `category.html?cat=${cat.id}`;
+                    
+                    const title = document.createElement('h2');
+                    title.className = 'card-title';
+                    title.textContent = cat.name;
+                    
+                    const desc = document.createElement('p');
+                    desc.className = 'card-desc';
+                    desc.textContent = cat.desc;
+                    
+                    card.appendChild(title);
+                    card.appendChild(desc);
+                    container.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
