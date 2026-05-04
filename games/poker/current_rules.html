@@ -9,44 +9,51 @@
 <body>
     <div class="nav">
         <a href="../../index.html">トップ</a>
-        <a href="overview.html">概要に戻る</a>
+        <a href="categories.html">ルールカテゴリ一覧</a>
     </div>
-    <h1>ポーカーの遊び方と現行ルール</h1>
+    <h1>ポーカー：現在のルール</h1>
 
-    <div class="card" id="how-to-play-card">
-        <h2 class="card-title" id="how-to-play-title">遊び方</h2>
+    <!-- 1. 遊び方の流れ -->
+    <div class="card section-card" id="how-to-play-card">
+        <h2 class="card-title"><span class="icon">🃏</span><span id="how-to-play-title">遊び方の流れ</span></h2>
         <div id="how-to-play-content"></div>
     </div>
 
-    <div class="card">
-        <h2 class="card-title">役の強さ（クリックで詳細）</h2>
-        <p class="card-desc" style="margin-bottom: 15px;">ポーカーの役一覧です。詳細はボタンから確認してください。</p>
-        <ol class="rule-list" style="padding-left: 20px; font-size: 0.9rem;">
-            <li>ハイカード（ブタ）</li>
-            <li>ワンペア</li>
-            <li>ツーペア</li>
-            <li>スリーオブアカインド（スリーカード）</li>
-            <li>ストレート</li>
-            <li>フラッシュ</li>
-            <li>フルハウス</li>
-            <li>フォーオブアカインド（フォーカード）</li>
-            <li>ストレートフラッシュ</li>
-            <li>ロイヤルストレートフラッシュ</li>
-        </ol>
-        <p style="margin-top: 15px;"><a href="../../details/poker_hand.html" class="btn btn-secondary">役の強さと引き分け判定の詳細を見る</a></p>
+    <!-- 2. ジョーカー -->
+    <div class="card section-card" id="joker-usage">
+        <h2 class="card-title"><span class="icon">✨</span>ジョーカーの使い方</h2>
+        <div class="detail-box">
+            <p class="card-desc">ジョーカーは<strong>「ワイルドカード」</strong>として扱います。</p>
+            <ul class="rule-list" style="margin-top: 10px;">
+                <li>手札にある他のカードと組み合わせて、<strong>どんなカード（数字・マーク）の代わりにもなります。</strong></li>
+                <li>役の判定において、最も強い役になるように自動的に解釈されます。</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card" id="joker-usage">
-        <h2 class="card-title">ジョーカーの使い方</h2>
-        <p class="card-desc">ジョーカーは「ワイルドカード」として扱います。</p>
-        <ul class="rule-list" style="margin-top: 10px;">
-            <li>手札にある他のカードと組み合わせて、<strong>どんなカード（数字・マーク）の代わりにもなります。</strong></li>
-            <li>例えば、♠10, ♠J, ♠Q, ♠K とジョーカーがあれば、ジョーカーを♠Aとして扱い「ロイヤルストレートフラッシュ」が完成します。</li>
-            <li>役の判定において、最も強い役になるように自動的に解釈されます。</li>
-        </ul>
+    <!-- 3. 役の強さ -->
+    <div class="card section-card">
+        <h2 class="card-title"><span class="icon">🏆</span>役の強さ（ランク）</h2>
+        <div class="hand-ranks-container">
+            <div class="hand-ranks-grid">
+                <div class="hand-rank-item gold"><span>10</span><strong>ロイヤル</strong></div>
+                <div class="hand-rank-item silver"><span>9</span><strong>ストフラ</strong></div>
+                <div class="hand-rank-item"><span>8</span><strong>フォーカード</strong></div>
+                <div class="hand-rank-item"><span>7</span><strong>フルハウス</strong></div>
+                <div class="hand-rank-item"><span>6</span><strong>フラッシュ</strong></div>
+                <div class="hand-rank-item"><span>5</span><strong>ストレート</strong></div>
+                <div class="hand-rank-item"><span>4</span><strong>スリーカード</strong></div>
+                <div class="hand-rank-item"><span>3</span><strong>ツーペア</strong></div>
+                <div class="hand-rank-item"><span>2</span><strong>ワンペア</strong></div>
+                <div class="hand-rank-item muted"><span>1</span><strong>ハイカード</strong></div>
+            </div>
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="../../details/poker_hand.html" class="btn btn-secondary">役の判定・引き分けルールの詳細を見る</a>
+        </div>
     </div>
 
-    <h2 style="margin-top: 30px;">現在設定されているルール</h2>
+    <h2 class="section-divider">有効な追加ルール設定</h2>
     <div id="current-rules-container"></div>
 
     <script src="../../app.js"></script>
@@ -58,19 +65,19 @@
             const container = document.getElementById('current-rules-container');
             const allRulesData = {};
 
-            // Load all rules data
+            // 全データ読み込み
             for (const cat of catData.categories) {
                 allRulesData[cat.id] = await loadJSON(`../../data/${game}_${cat.id}.json`);
             }
 
-            // Joker visibility
+            // ジョーカー表示制御
             const jokerVal = getRuleValue(game, 'joker', allRulesData);
             if (!jokerVal) {
                 const jokerCard = document.getElementById('joker-usage');
                 if (jokerCard) jokerCard.style.display = 'none';
             }
 
-            // Render How to Play
+            // 遊び方のレンダリング
             const playStyle = getRuleValue(game, 'play_style', allRulesData);
             const flowKey = playStyle.includes('テキサス') ? 'TexasHoldem' : 'DrawPoker';
             const flow = flowData[flowKey];
@@ -80,10 +87,9 @@
                 const content = document.getElementById('how-to-play-content');
                 const ol = document.createElement('ol');
                 ol.className = 'rule-list';
-                ol.style.paddingLeft = '20px';
+                ol.style.paddingLeft = '25px';
 
                 flow.steps.forEach(step => {
-                    // Check condition
                     if (step.condition) {
                         let isVisible = true;
                         if (typeof step.condition === 'string') {
@@ -97,74 +103,129 @@
                     }
 
                     let text = step.text;
-                    // Replace placeholders
                     text = text.replace(/{(\w+)}/g, (match, id) => {
                         const val = getRuleValue(game, id, allRulesData);
-                        return `<span style="color: var(--accent-gold); font-weight: bold;">${val}</span>`;
+                        return `<span class="val-text">${val}</span>`;
                     });
 
                     const li = document.createElement('li');
+                    li.style.marginBottom = '10px';
                     li.innerHTML = text;
                     ol.appendChild(li);
                 });
                 content.appendChild(ol);
             }
 
-            // Render Current Rules
+            // ルール一覧のレンダリング
             if (catData && catData.categories) {
                 for (const cat of catData.categories) {
                     const data = allRulesData[cat.id];
-                    if (data && data.rules && data.rules.length > 0) {
-                        const validRules = [];
-                        for (const rule of data.rules) {
-                            if (!rule.visible) continue;
-                            const isVisible = await checkRuleVisibility(game, rule.id, allRulesData);
-                            if (!isVisible) continue;
+                    if (!data || !data.rules) continue;
 
-                            const value = getRuleValue(game, rule.id, allRulesData);
-                            if (value === false || value === "なし") continue;
-                            validRules.push({ rule, value });
-                        }
-
-                        if (validRules.length === 0) continue;
-
-                        const card = document.createElement('div');
-                        card.className = 'card';
+                    const validRules = [];
+                    for (const rule of data.rules) {
+                        if (!rule.visible) continue;
                         
-                        const title = document.createElement('h2');
-                        title.className = 'card-title';
-                        title.textContent = `【${cat.name}】`;
-                        card.appendChild(title);
+                        // 重複除外
+                        if (['joker', 'play_style', 'hand_rank'].includes(rule.id)) continue;
 
-                        const ul = document.createElement('ul');
-                        ul.className = 'rule-list';
+                        const isVisible = await checkRuleVisibility(game, rule.id, allRulesData);
+                        if (!isVisible) continue;
 
-                        validRules.forEach(({ rule, value }) => {
-                            const li = document.createElement('li');
-                            li.style.marginBottom = '15px';
-                            
-                            let displayValue = "";
-                            if (rule.type === 'boolean') {
-                                displayValue = "あり (ON)";
-                            } else {
-                                displayValue = value;
-                            }
-
-                            li.innerHTML = `
-                                <div class="rule-header">
-                                    <strong>${rule.name}: <span style="color: var(--accent-gold);">${displayValue}</span></strong>
-                                    <a href="${rule.detail}" class="btn-detail">詳細</a>
-                                </div>
-                                <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">${rule.desc}</div>
-                            `;
-                            ul.appendChild(li);
-                        });
-                        card.appendChild(ul);
-                        container.appendChild(card);
+                        const value = getRuleValue(game, rule.id, allRulesData);
+                        if (value === false || value === "なし") continue;
+                        validRules.push({ rule, value });
                     }
+
+                    if (validRules.length === 0) continue;
+
+                    const card = document.createElement('div');
+                    card.className = 'card section-card';
+                    card.innerHTML = `<h3 class="category-tag">${cat.name}</h3>`;
+
+                    const ul = document.createElement('ul');
+                    ul.className = 'rule-list';
+
+                    validRules.forEach(({ rule, value }) => {
+                        const li = document.createElement('li');
+                        li.style.marginBottom = '15px';
+                        
+                        let displayValue = (rule.type === 'boolean') ? "ON" : value;
+
+                        li.innerHTML = `
+                            <div class="rule-header">
+                                <strong>${rule.name}: <span class="val-text">${displayValue}</span></strong>
+                                <a href="${rule.detail}" class="btn-detail">解説</a>
+                            </div>
+                            <div class="rule-desc-text">${rule.desc}</div>
+                        `;
+                        ul.appendChild(li);
+                    });
+                    card.appendChild(ul);
+                    container.appendChild(card);
                 }
             }
         });
     </script>
+
+    <style>
+        .section-card { border-top: 4px solid var(--accent-green); }
+        .icon { margin-right: 10px; font-style: normal; }
+        
+        .detail-box {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .hand-ranks-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .hand-rank-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 5px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .hand-rank-item span { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 2px; }
+        .hand-rank-item strong { font-size: 0.85rem; }
+        
+        .hand-rank-item.gold { border-color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); }
+        .hand-rank-item.gold strong { color: var(--accent-gold); }
+        .hand-rank-item.silver { border-color: #aaa; background: rgba(170, 170, 170, 0.1); }
+        .hand-rank-item.muted { opacity: 0.6; }
+
+        .section-divider {
+            margin-top: 50px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .category-tag {
+            font-size: 0.75rem;
+            background: var(--accent-green);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .val-text { color: var(--accent-gold); font-weight: bold; }
+        .rule-desc-text { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+        @media (max-width: 600px) {
+            .hand-ranks-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
 </body>
 </html>

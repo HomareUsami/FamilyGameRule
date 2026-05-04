@@ -9,71 +9,72 @@
 <body>
     <div class="nav">
         <a href="../../index.html">トップ</a>
-        <a href="overview.html">概要に戻る</a>
+        <a href="categories.html">ルールカテゴリ一覧</a>
     </div>
-    <h1>大富豪の遊び方と現行ルール</h1>
+    <h1>大富豪：現在のルール</h1>
 
-    <div class="card">
-        <h2 class="card-title">階級（ランク）の呼び方</h2>
-        <p class="card-desc">順位によって以下の呼び名が決まります（4人プレイの場合）。</p>
-        <ul class="rule-list daifugo-list" style="margin-top: 10px;">
-            <li><strong style="color: var(--accent-gold);">大富豪:</strong> 1位。最強の特権を持ちます。</li>
-            <li><strong>富豪:</strong> 2位。</li>
-            <li><strong>貧民:</strong> 3位。</li>
-            <li><strong style="color: var(--accent-red);">大貧民:</strong> 最下位。非常に厳しい条件でスタートします。</li>
-        </ul>
-        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">※5人以上の場合は、間に「平民」が入ります。</p>
-    </div>
-
-    <div class="card">
-        <h2 class="card-title">遊び方の流れ</h2>
-        <ol class="rule-list daifugo-list" style="margin-top: 15px; padding-left: 20px;">
+    <!-- 1. 基本の流れ -->
+    <div class="card section-card">
+        <h2 class="card-title"><span class="icon">🔄</span>基本の流れ</h2>
+        <ol class="rule-list daifugo-list" style="margin-top: 15px; padding-left: 25px;">
             <li>全プレイヤーにカードを均等に配ります。</li>
-            <li id="step-tax">【カードの引き渡し】前回の順位に基づき、カードを交換します（詳細は下記）。</li>
+            <li id="step-tax" class="highlight-step"><strong>【カードの引き渡し】</strong>前回の順位に基づき、カードを交換します（詳細は下記）。</li>
             <li>ダイヤの3（または前回の大貧民）から時計回りにカードを出します。</li>
             <li>前の人が出したカードより<strong>強いカード</strong>を、<strong>同じ枚数</strong>で出さなければなりません。</li>
             <li>出せない時や出したくない時は「パス」をします。</li>
-            <li>自分以外の全員がパスをすると「場が流れ」ます。場に出たカードをどかし、最後にカードを出した人が好きなカードから再スタートします。</li>
+            <li>全員がパスをすると「場が流れ」ます。最後にカードを出した人が好きなカードから再開します。</li>
             <li>手札を一番早く無くした人が「大富豪」になり、順に階級が決まります。</li>
         </ol>
     </div>
 
-    <div class="card" id="card-exchange-detail">
-        <h2 class="card-title">カードの引き渡し（税金）の詳細</h2>
-        <p class="card-desc">2ゲーム目以降、開始時に以下の交換を行います。</p>
-        <ul class="rule-list daifugo-list" style="margin-top: 10px;">
-            <li><strong>大貧民:</strong> 持っているカードの中で「最強の2枚」を大富豪に差し出す。</li>
-            <li><strong>大富豪:</strong> 大貧民から受け取った後、自分の不要なカード「任意の2枚」を大貧民に渡す。</li>
-            <li><strong>貧民:</strong> 持っているカードの中で「最強の1枚」を富豪に差し出す。</li>
-            <li><strong>富豪:</strong> 貧民から受け取った後、自分の不要なカード「任意の1枚」を貧民に渡す。</li>
-        </ul>
-        <p style="font-size: 0.85rem; margin-top: 10px; color: var(--text-muted);">※引き渡し枚数は設定で変更可能です。</p>
+    <!-- 2. 階級とカード交換 -->
+    <div class="card section-card" id="rank-exchange-card">
+        <h2 class="card-title"><span class="icon">👑</span>階級（ランク）と引き渡し</h2>
+        <div class="rank-grid">
+            <div class="rank-item daifugo"><strong>大富豪</strong><span>1位</span></div>
+            <div class="rank-item fugo"><strong>富豪</strong><span>2位</span></div>
+            <div class="rank-item heimin"><strong>平民</strong><span>中位</span></div>
+            <div class="rank-item binmin"><strong>貧民</strong><span>下位</span></div>
+            <div class="rank-item daibinmin"><strong>大貧民</strong><span>最下位</span></div>
+        </div>
+        <p class="small-note" style="margin-bottom: 15px; color: var(--text-muted);">※4人プレイの場合は「平民」がなくなります。5人以上の場合は順位に応じて平民が増えます。</p>
+        
+        <div id="card-exchange-detail" class="detail-box">
+            <h3 class="sub-title">カードの引き渡し（税金）</h3>
+            <p class="card-desc">2ゲーム目以降、開始時に以下の交換を行います。</p>
+            <div class="exchange-flow">
+                <div class="exchange-item">
+                    <div class="exchange-label">大貧民 ↔ 大富豪</div>
+                    <div class="exchange-desc">大貧民は<strong>最強の <span class="tax-val" data-tax="daifugo">2</span> 枚</strong>を差し出し、大富豪は任意の不要な <span class="tax-val" data-tax="daifugo">2</span> 枚を返します。</div>
+                </div>
+                <div class="exchange-item">
+                    <div class="exchange-label">貧民 ↔ 富豪</div>
+                    <div class="exchange-desc">貧民は<strong>最強の <span class="tax-val" data-tax="fugo">1</span> 枚</strong>を差し出し、富豪は任意の不要な <span class="tax-val" data-tax="fugo">1</span> 枚を返します。</div>
+                </div>
+                <div class="exchange-item">
+                    <div class="exchange-label">平民</div>
+                    <div class="exchange-desc">カードの引き渡し（交換）はありません。</div>
+                </div>
+            </div>
+            <p id="note-miyako-ochi" class="small-note" style="color: var(--accent-red);">※都落ちが発生した場合、大富豪は即座に大貧民となります。</p>
+        </div>
     </div>
 
-    <div class="card" id="joker-usage-daifugo">
-        <h2 class="card-title">ジョーカーの使い方</h2>
-        <p class="card-desc">ジョーカーは単体で最強のカードになるほか、代用カードとしても使えます。</p>
-        <ul class="rule-list daifugo-list" style="margin-top: 10px;">
-            <li><strong>最強カードとして:</strong> 単体で出すと、2を含むすべての数字に勝てます。</li>
-            <li><strong>代用（ワイルドカード）として:</strong> ペア（2枚出し以上）や階段で出す際、<strong>どんなカードの代わりにもなります。</strong></li>
-            <li>例：5が2枚とジョーカーを一緒に出すと、5の「3枚出し」として扱われます。</li>
-            <li id="desc-spade-three">※「スペードの3」ルールが有効な場合、ジョーカー単体に対してのみスペードの3が勝つことができます。</li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h2 class="card-title">カードの強さ順と枚数</h2>
-        <p class="card-desc">大富豪における基本的なカードの強さは以下の通りです。<br>
-        <span id="strength-line" style="font-size: 1.1rem; color: var(--accent-gold); font-weight: bold; margin: 10px 0; display: inline-block;">(弱) 3 < 4 < 5 < 6 < 7 < 8 < 9 < 10 < J < Q < K < A < 2 < ジョーカー (強)</span>
-        </p>
+    <!-- 3. 強さとジョーカー -->
+    <div class="card section-card">
+        <h2 class="card-title"><span class="icon">⚔️</span>カードの強さ</h2>
+        <div class="strength-box">
+            <div class="strength-label">強さ順</div>
+            <div id="strength-line" class="strength-line">3 < 4 < 5 < 6 < 7 < 8 < 9 < 10 < J < Q < K < A < 2 < <span class="joker-text">ジョーカー</span></div>
+        </div>
         <ul class="rule-list daifugo-list" style="margin-top: 15px;">
-            <li>同じ数字のカードは各マーク（♠♥♦♣）につき1枚ずつ、計4枚存在します。</li>
-            <li id="desc-kakumei">「革命」が起きると、この強さが完全に逆転し、3が最強・2が最弱になります（ジョーカーは常に最強）。</li>
-            <li id="desc-spade-three-return"><strong>スペ3返し:</strong> ジョーカー単独出しに対してのみ、最弱である「スペードの3」を出すと無条件で勝つことができます（このルールは設定で変更可能です）。</li>
+            <li id="desc-kakumei"><strong>革命:</strong> 4枚以上の同時出しで強さが逆転（3が最強、2が最弱。ジョーカーは不変）。</li>
+            <li id="joker-usage-daifugo"><strong>ジョーカー:</strong> 単体で最強なだけでなく、ペアや階段の「代用カード」としても使えます。</li>
+            <li id="desc-spade-three-return" class="special-rule-li"><strong>スペ3返し:</strong> ジョーカーの単独出しに対してのみ、スペードの3で勝つことができます。</li>
         </ul>
     </div>
 
-    <h2 style="margin-top: 30px;">現在設定されているルール</h2>
+    <h2 class="section-divider">有効な特殊ルール設定</h2>
     <div id="current-rules-container"></div>
 
     <script src="../../app.js"></script>
@@ -84,120 +85,189 @@
             const container = document.getElementById('current-rules-container');
             const allRulesData = {};
 
-            // Load all rules data
             for (const cat of catData.categories) {
                 allRulesData[cat.id] = await loadJSON(`../../data/${game}_${cat.id}.json`);
             }
 
-            // Dynamic card strength display
+            // --- 1. 革命の表示制御 ---
             const kakumeiVal = getRuleValue(game, 'kakumei', allRulesData);
             if (kakumeiVal === false || kakumeiVal === "なし") {
-                document.getElementById('desc-kakumei').style.display = 'none';
-            }
-            const spadeVal = getRuleValue(game, 'spade_three', allRulesData);
-            if (spadeVal === false || spadeVal === "なし") {
-                const s3 = document.getElementById('desc-spade-three');
-                if (s3) s3.style.display = 'none';
-                const s3r = document.getElementById('desc-spade-three-return');
-                if (s3r) s3r.style.display = 'none';
+                const el = document.getElementById('desc-kakumei');
+                if (el) el.style.display = 'none';
             }
 
-            // Joker visibility and strength line update
+            // --- 2. ジョーカーの表示制御 ---
             const jokerCount = getRuleValue(game, 'joker_count', allRulesData);
             if (jokerCount === "なし") {
-                const jokerCard = document.getElementById('joker-usage-daifugo');
-                if (jokerCard) jokerCard.style.display = 'none';
-                const strengthLine = document.getElementById('strength-line');
-                if (strengthLine) strengthLine.textContent = strengthLine.textContent.replace(' < ジョーカー', '');
-                const s3r = document.getElementById('desc-spade-three-return');
-                if (s3r) s3r.style.display = 'none';
-            }
-
-            // Card exchange visibility
-            const taxEnabled = getRuleValue(game, 'tax_enabled', allRulesData);
-            if (!taxEnabled) {
-                const taxStep = document.getElementById('step-tax');
-                if (taxStep) taxStep.style.display = 'none';
-                const taxDetail = document.getElementById('card-exchange-detail');
-                if (taxDetail) taxDetail.style.display = 'none';
+                const elUsage = document.getElementById('joker-usage-daifugo');
+                if (elUsage) elUsage.style.display = 'none';
+                const elS3 = document.getElementById('desc-spade-three-return');
+                if (elS3) elS3.style.display = 'none';
+                const sLine = document.getElementById('strength-line');
+                if (sLine) sLine.innerHTML = sLine.innerHTML.replace(' < <span class="joker-text">ジョーカー</span>', '');
             } else {
-                // Update text with current amounts
-                const taxDaifugo = getRuleValue(game, 'tax_daifugo', allRulesData);
-                const taxFugo = getRuleValue(game, 'tax_fugo', allRulesData);
-                const taxDetail = document.getElementById('card-exchange-detail');
-                if (taxDetail) {
-                    taxDetail.innerHTML = taxDetail.innerHTML
-                        .replace(/2枚/g, `${taxDaifugo}枚`)
-                        .replace(/1枚/g, `${taxFugo}枚`);
+                const spadeVal = getRuleValue(game, 'spade_three', allRulesData);
+                if (spadeVal === false || spadeVal === "なし") {
+                    const elS3 = document.getElementById('desc-spade-three-return');
+                    if (elS3) elS3.style.display = 'none';
                 }
             }
 
-            // Render Current Rules
+            // --- 3. カード交換の表示制御 ---
+            const taxEnabled = getRuleValue(game, 'tax_enabled', allRulesData);
+            if (!taxEnabled) {
+                const step = document.getElementById('step-tax');
+                if (step) step.style.display = 'none';
+                const detail = document.getElementById('card-exchange-detail');
+                if (detail) detail.style.display = 'none';
+            } else {
+                const taxDaifugo = getRuleValue(game, 'tax_daifugo', allRulesData);
+                const taxFugo = getRuleValue(game, 'tax_fugo', allRulesData);
+                document.querySelectorAll('.tax-val[data-tax="daifugo"]').forEach(el => el.textContent = taxDaifugo);
+                document.querySelectorAll('.tax-val[data-tax="fugo"]').forEach(el => el.textContent = taxFugo);
+
+                // 都落ちノートの制御
+                const miyakoVal = getRuleValue(game, 'miyako_ochi', allRulesData);
+                if (!miyakoVal) {
+                    const elMiyako = document.getElementById('note-miyako-ochi');
+                    if (elMiyako) elMiyako.style.display = 'none';
+                }
+            }
+
+            // --- 4. 追加ルールのレンダリング ---
             if (catData && catData.categories) {
                 for (const cat of catData.categories) {
                     const data = allRulesData[cat.id];
-                    if (data && data.rules && data.rules.length > 0) {
-                        const validRules = [];
-                        for (const rule of data.rules) {
-                            if (!rule.visible) continue;
-                            const isVisible = await checkRuleVisibility(game, rule.id, allRulesData);
-                            if (!isVisible) continue;
+                    if (!data || !data.rules) continue;
 
-                            const value = getRuleValue(game, rule.id, allRulesData);
-                            if (value === false || value === "なし") continue;
-                            
-                            // Special check: if it's a main toggle, check if any sub-settings are on
-                            if (rule.id === 'shibari') {
-                                const subOn = ['shibari_num', 'shibari_suit', 'shibari_geki'].some(sid => getRuleValue(game, sid, allRulesData));
-                                if (!subOn) continue;
-                            }
-                            if (rule.id === 'forbidden_agari') {
-                                const subOn = ['forbidden_joker', 'forbidden_2', 'forbidden_8', 'forbidden_spade3'].some(sid => getRuleValue(game, sid, allRulesData));
-                                if (!subOn) continue;
-                            }
-
-                            validRules.push({ rule, value });
-                        }
-
-                        if (validRules.length === 0) continue;
-
-                        const card = document.createElement('div');
-                        card.className = 'card';
+                    const validRules = [];
+                    for (const rule of data.rules) {
+                        if (!rule.visible) continue;
                         
-                        const title = document.createElement('h2');
-                        title.className = 'card-title';
-                        title.textContent = `【${cat.name}】`;
-                        card.appendChild(title);
+                        // 重複除外
+                        if (['joker_count', 'joker_strength', 'kakumei', 'spade_three', 'tax_enabled', 'tax_daifugo', 'tax_fugo', 'miyako_ochi'].includes(rule.id)) continue;
 
-                        const ul = document.createElement('ul');
-                        ul.className = 'rule-list daifugo-list';
+                        const isVisible = await checkRuleVisibility(game, rule.id, allRulesData);
+                        if (!isVisible) continue;
 
-                        validRules.forEach(({ rule, value }) => {
-                            const li = document.createElement('li');
-                            li.style.marginBottom = '15px';
-                            
-                            let displayValue = "";
-                            if (rule.type === 'boolean') {
-                                displayValue = "あり (ON)";
-                            } else {
-                                displayValue = value;
-                            }
-
-                            li.innerHTML = `
-                                <div class="rule-header">
-                                    <strong>${rule.name}: <span style="color: var(--accent-gold);">${displayValue}</span></strong>
-                                    <a href="${rule.detail}" class="btn-detail">詳細</a>
-                                </div>
-                                <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">${rule.desc}</div>
-                            `;
-                            ul.appendChild(li);
-                        });
-                        card.appendChild(ul);
-                        container.appendChild(card);
+                        const value = getRuleValue(game, rule.id, allRulesData);
+                        if (value === false || value === "なし") continue;
+                        
+                        validRules.push({ rule, value });
                     }
+
+                    if (validRules.length === 0) continue;
+
+                    const card = document.createElement('div');
+                    card.className = 'card section-card';
+                    card.innerHTML = `<h3 class="category-tag">${cat.name}</h3>`;
+
+                    const ul = document.createElement('ul');
+                    ul.className = 'rule-list daifugo-list';
+
+                    validRules.forEach(({ rule, value }) => {
+                        const li = document.createElement('li');
+                        li.style.marginBottom = '15px';
+                        
+                        let displayValue = (rule.type === 'boolean') ? "ON" : value;
+
+                        li.innerHTML = `
+                            <div class="rule-header">
+                                <strong>${rule.name}: <span class="val-text">${displayValue}</span></strong>
+                                <a href="${rule.detail}" class="btn-detail">解説</a>
+                            </div>
+                            <div class="rule-desc-text">${rule.desc}</div>
+                        `;
+                        ul.appendChild(li);
+                    });
+                    card.appendChild(ul);
+                    container.appendChild(card);
                 }
             }
         });
     </script>
+
+    <style>
+        .section-card {
+            border-top: 4px solid var(--accent-green);
+        }
+        .icon {
+            margin-right: 10px;
+            font-style: normal;
+        }
+        .rank-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 20px 0 10px 0;
+        }
+        .rank-item {
+            padding: 12px 2px;
+            border-radius: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.03);
+        }
+        .rank-item strong { font-size: 0.95rem; margin-bottom: 2px; }
+        .rank-item span { font-size: 0.65rem; color: var(--text-muted); }
+        
+        .rank-item.daifugo { border-color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); }
+        .rank-item.daibinmin { border-color: var(--accent-red); background: rgba(255, 68, 68, 0.1); }
+        .rank-item.heimin { opacity: 0.8; }
+
+        .detail-box {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .sub-title { font-size: 1rem; color: var(--accent-gold); margin-bottom: 10px; }
+        
+        .exchange-flow { display: flex; flex-direction: column; gap: 15px; }
+        .exchange-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; }
+        .exchange-label { font-weight: bold; color: var(--accent-green); font-size: 0.9rem; margin-bottom: 5px; }
+        .exchange-desc { font-size: 0.85rem; line-height: 1.4; }
+
+        .strength-box {
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(212,175,55,0.1));
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(212,175,55,0.3);
+            margin-bottom: 20px;
+        }
+        .strength-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+        .strength-line { font-size: 1.1rem; letter-spacing: 2px; }
+        .joker-text { color: var(--accent-red); font-weight: bold; }
+
+        .section-divider {
+            margin-top: 50px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .category-tag {
+            font-size: 0.75rem;
+            background: var(--accent-green);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .val-text { color: var(--accent-gold); font-weight: bold; }
+        .rule-desc-text { font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; }
+        .small-note { font-size: 0.75rem; margin-top: 10px; }
+
+        @media (max-width: 600px) {
+            .rank-grid { grid-template-columns: repeat(3, 1fr); }
+            .strength-line { font-size: 0.9rem; letter-spacing: 1px; }
+        }
+    </style>
 </body>
 </html>

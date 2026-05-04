@@ -97,7 +97,7 @@ window.DATA_daifugo_flow = {
       "type": "boolean",
       "default": true,
       "desc": "上位のプレイヤーと下位のプレイヤーがカードを交換するルールです。オフにすると引き渡しは行われません。",
-      "detail": "../../details/daifugo_shibari.html", // TODO: Create specific detail if needed
+      "detail": "../../details/daifugo_tax.html",
       "visible": true
     },
     {
@@ -106,7 +106,7 @@ window.DATA_daifugo_flow = {
       "type": "number",
       "default": 2,
       "desc": "大富豪が大貧民から受け取る（および不要なカードを渡す）枚数です。",
-      "detail": "../../details/daifugo_shibari.html",
+      "detail": "../../details/daifugo_tax.html",
       "visible": true
     },
     {
@@ -115,7 +115,7 @@ window.DATA_daifugo_flow = {
       "type": "number",
       "default": 1,
       "desc": "富豪が貧民から受け取る（および不要なカードを渡す）枚数です。",
-      "detail": "../../details/daifugo_shibari.html",
+      "detail": "../../details/daifugo_tax.html",
       "visible": true
     }
   ]
