@@ -14,6 +14,12 @@
     <h1 id="category-title">ルールの読み込み中...</h1>
     
     <div id="rules-container"></div>
+
+    <div class="card" style="margin-top: 30px; text-align: center;">
+        <h3 style="margin-bottom: 15px;">設定が終わったら</h3>
+        <a href="current_rules.html" class="btn">現在のルールを確認する</a>
+        <a href="guide.html" class="btn btn-secondary">初心者向けガイドを見る</a>
+    </div>
     
     <script src="../../app.js"></script>
     <script>
@@ -25,39 +31,52 @@
                 return;
             }
 
-            // Get Category Name for Title
+            // Get All Rules Data for visibility check
             const catData = await loadJSON(`../../data/${game}_categories.json`);
+            const allRulesData = {};
             if (catData) {
+                for (const cat of catData.categories) {
+                    allRulesData[cat.id] = await loadJSON(`../../data/${game}_${cat.id}.json`);
+                }
                 const categoryInfo = catData.categories.find(c => c.id === catId);
                 if (categoryInfo) {
                     document.getElementById('category-title').textContent = categoryInfo.name;
                 }
             }
 
-            // Get Rules for Category
-            const data = await loadJSON(`../../data/${game}_${catId}.json`);
+            const data = allRulesData[catId];
             const container = document.getElementById('rules-container');
+
+            window.updateAllVisibilities = async () => {
+                const controls = container.querySelectorAll('[data-rule-id]');
+                controls.forEach(async control => {
+                    const ruleId = control.getAttribute('data-rule-id');
+                    const isVisible = await checkRuleVisibility(game, ruleId, allRulesData);
+                    if (isVisible) {
+                        control.classList.remove('hidden');
+                    } else {
+                        control.classList.add('hidden');
+                    }
+                });
+            };
             
             if (data && data.rules) {
-                const validRules = data.rules.filter(rule => {
-                    if (!rule.visible) return false;
-                    if (rule.id === 'stairs_kakumei') {
-                        const stairsValue = getRule('daifugo', 'stairs') !== undefined ? getRule('daifugo', 'stairs') : true;
-                        if (stairsValue === false || stairsValue === "なし") return false;
-                    }
-                    return true;
-                });
-
-                validRules.forEach(rule => {
+                data.rules.forEach(rule => {
+                    if (!rule.visible) return;
+                    
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.style.paddingTop = '10px';
+                    card.setAttribute('data-rule-id', rule.id);
                     
                     const control = createRuleControl(game, rule);
                     card.appendChild(control);
                     
                     container.appendChild(card);
                 });
+                
+                // Initial visibility check
+                setTimeout(window.updateAllVisibilities, 100);
             }
         });
     </script>

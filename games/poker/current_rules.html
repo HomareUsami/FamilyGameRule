@@ -13,19 +13,9 @@
     </div>
     <h1>ポーカーの遊び方と現行ルール</h1>
 
-    <div class="card">
-        <h2 class="card-title">遊び方（テキサスホールデム基準）</h2>
-        <p style="font-size: 0.85rem; margin-bottom: 10px; color: var(--text-muted);">※プレイスタイルでドローポーカーを選択している場合は、5枚配られて1回交換する方式になります。（<a href="../../details/poker_play_style.html">プレイスタイルの詳細</a>）</p>
-        <ol class="rule-list" style="margin-top: 15px; padding-left: 20px;">
-            <li><a href="../../details/poker_blinds.html">ブラインド</a>（参加費）を払います。</li>
-            <li>各プレイヤーに2枚のカードが配られます。</li>
-            <li>第1ラウンドの<a href="../../details/poker_actions.html">ベット（賭け）</a>を行います。</li>
-            <li>場に共通のカード（コミュニティカード）が3枚開かれます。</li>
-            <li>第2ラウンドのベットを行います。</li>
-            <li>場に4枚目のカードが開かれ、第3ラウンドのベットを行います。</li>
-            <li>場に5枚目のカードが開かれ、最後のベットを行います。</li>
-            <li><a href="../../details/poker_showdown.html">ショーダウン</a>（手札公開）を行い、一番強い<a href="../../details/poker_hand.html">役</a>を作った人が勝ちます。</li>
-        </ol>
+    <div class="card" id="how-to-play-card">
+        <h2 class="card-title" id="how-to-play-title">遊び方</h2>
+        <div id="how-to-play-content"></div>
     </div>
 
     <div class="card">
@@ -46,6 +36,16 @@
         <p style="margin-top: 15px;"><a href="../../details/poker_hand.html" class="btn btn-secondary">役の強さと引き分け判定の詳細を見る</a></p>
     </div>
 
+    <div class="card" id="joker-usage">
+        <h2 class="card-title">ジョーカーの使い方</h2>
+        <p class="card-desc">ジョーカーは「ワイルドカード」として扱います。</p>
+        <ul class="rule-list" style="margin-top: 10px;">
+            <li>手札にある他のカードと組み合わせて、<strong>どんなカード（数字・マーク）の代わりにもなります。</strong></li>
+            <li>例えば、♠10, ♠J, ♠Q, ♠K とジョーカーがあれば、ジョーカーを♠Aとして扱い「ロイヤルストレートフラッシュ」が完成します。</li>
+            <li>役の判定において、最も強い役になるように自動的に解釈されます。</li>
+        </ul>
+    </div>
+
     <h2 style="margin-top: 30px;">現在設定されているルール</h2>
     <div id="current-rules-container"></div>
 
@@ -54,20 +54,77 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const game = 'poker';
             const catData = await loadJSON(`../../data/${game}_categories.json`);
+            const flowData = await loadJSON(`../../data/${game}_flow.json`);
             const container = document.getElementById('current-rules-container');
+            const allRulesData = {};
 
+            // Load all rules data
+            for (const cat of catData.categories) {
+                allRulesData[cat.id] = await loadJSON(`../../data/${game}_${cat.id}.json`);
+            }
+
+            // Joker visibility
+            const jokerVal = getRuleValue(game, 'joker', allRulesData);
+            if (!jokerVal) {
+                const jokerCard = document.getElementById('joker-usage');
+                if (jokerCard) jokerCard.style.display = 'none';
+            }
+
+            // Render How to Play
+            const playStyle = getRuleValue(game, 'play_style', allRulesData);
+            const flowKey = playStyle.includes('テキサス') ? 'TexasHoldem' : 'DrawPoker';
+            const flow = flowData[flowKey];
+            
+            if (flow) {
+                document.getElementById('how-to-play-title').textContent = flow.title;
+                const content = document.getElementById('how-to-play-content');
+                const ol = document.createElement('ol');
+                ol.className = 'rule-list';
+                ol.style.paddingLeft = '20px';
+
+                flow.steps.forEach(step => {
+                    // Check condition
+                    if (step.condition) {
+                        let isVisible = true;
+                        if (typeof step.condition === 'string') {
+                            const conditionVal = getRuleValue(game, step.condition, allRulesData);
+                            if (!conditionVal || conditionVal === "なし") isVisible = false;
+                        } else if (typeof step.condition === 'object') {
+                            const currentVal = getRuleValue(game, step.condition.id, allRulesData);
+                            if (currentVal !== step.condition.value) isVisible = false;
+                        }
+                        if (!isVisible) return;
+                    }
+
+                    let text = step.text;
+                    // Replace placeholders
+                    text = text.replace(/{(\w+)}/g, (match, id) => {
+                        const val = getRuleValue(game, id, allRulesData);
+                        return `<span style="color: var(--accent-gold); font-weight: bold;">${val}</span>`;
+                    });
+
+                    const li = document.createElement('li');
+                    li.innerHTML = text;
+                    ol.appendChild(li);
+                });
+                content.appendChild(ol);
+            }
+
+            // Render Current Rules
             if (catData && catData.categories) {
                 for (const cat of catData.categories) {
-                    const data = await loadJSON(`../../data/${game}_${cat.id}.json`);
+                    const data = allRulesData[cat.id];
                     if (data && data.rules && data.rules.length > 0) {
-                        const validRules = data.rules.filter(rule => {
-                            if (!rule.visible) return false;
-                            const customDef = getDefaultRule(game, rule.id);
-                            const fallback = customDef !== undefined ? customDef : rule.default;
-                            const value = getRule(game, rule.id) !== undefined ? getRule(game, rule.id) : fallback;
-                            if (value === false || value === "なし") return false;
-                            return true;
-                        });
+                        const validRules = [];
+                        for (const rule of data.rules) {
+                            if (!rule.visible) continue;
+                            const isVisible = await checkRuleVisibility(game, rule.id, allRulesData);
+                            if (!isVisible) continue;
+
+                            const value = getRuleValue(game, rule.id, allRulesData);
+                            if (value === false || value === "なし") continue;
+                            validRules.push({ rule, value });
+                        }
 
                         if (validRules.length === 0) continue;
 
@@ -77,19 +134,12 @@
                         const title = document.createElement('h2');
                         title.className = 'card-title';
                         title.textContent = `【${cat.name}】`;
-                        title.style.borderBottom = '1px solid var(--border-color)';
-                        title.style.paddingBottom = '10px';
-                        title.style.marginBottom = '15px';
                         card.appendChild(title);
 
                         const ul = document.createElement('ul');
                         ul.className = 'rule-list';
 
-                        validRules.forEach(rule => {
-                            const customDef = getDefaultRule(game, rule.id);
-                            const fallback = customDef !== undefined ? customDef : rule.default;
-                            const value = getRule(game, rule.id) !== undefined ? getRule(game, rule.id) : fallback;
-                            
+                        validRules.forEach(({ rule, value }) => {
                             const li = document.createElement('li');
                             li.style.marginBottom = '15px';
                             
@@ -101,9 +151,9 @@
                             }
 
                             li.innerHTML = `
-                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                <div class="rule-header">
                                     <strong>${rule.name}: <span style="color: var(--accent-gold);">${displayValue}</span></strong>
-                                    <a href="${rule.detail}" style="font-size: 0.8rem; border: 1px solid var(--accent-green); padding: 2px 5px; border-radius: 3px;">詳細</a>
+                                    <a href="${rule.detail}" class="btn-detail">詳細</a>
                                 </div>
                                 <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">${rule.desc}</div>
                             `;

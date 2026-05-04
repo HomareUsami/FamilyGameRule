@@ -134,6 +134,83 @@ a:hover {
     box-shadow: 0 4px 8px rgba(255,77,77,0.2);
 }
 
+.btn-detail {
+    font-size: 0.8rem;
+    color: var(--accent-green);
+    border: 1px solid var(--accent-green);
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-detail:hover {
+    background-color: var(--accent-green);
+    color: #000;
+    text-decoration: none;
+}
+
+.rule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.rule-header strong {
+    color: var(--accent-gold);
+    flex: 1;
+}
+
+/* Visibility */
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+    
+    .nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .nav a {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+    }
+
+    .form-group select, .form-group input {
+        width: 100%;
+    }
+
+    .switch {
+        align-self: flex-end;
+    }
+
+    .rule-header {
+        align-items: flex-start;
+    }
+
+    .rule-header .btn-detail {
+        margin-top: 2px;
+    }
+}
+
 /* Navigation */
 .nav {
     display: flex;

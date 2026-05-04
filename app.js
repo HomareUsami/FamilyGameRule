@@ -64,6 +64,53 @@ function setVisibility(game, ruleId, value) {
     saveSettings(state);
 }
 
+async function checkRuleVisibility(game, ruleId, allRulesData) {
+    const depsData = await loadJSON(`../../data/dependencies.json`);
+    if (!depsData || !depsData[game] || !depsData[game][ruleId]) return true;
+
+    const condition = depsData[game][ruleId].show_if;
+    if (!condition) return true;
+
+    return checkCondition(game, condition, allRulesData);
+}
+
+function checkCondition(game, condition, allRulesData) {
+    // any_of (OR) support
+    if (condition.any_of && Array.isArray(condition.any_of)) {
+        return condition.any_of.some(c => checkCondition(game, c, allRulesData));
+    }
+    
+    // all_of (AND) support (explicit)
+    if (condition.all_of && Array.isArray(condition.all_of)) {
+        return condition.all_of.every(c => checkCondition(game, c, allRulesData));
+    }
+
+    // Default: AND check for all properties in the object
+    for (const [depId, depValue] of Object.entries(condition)) {
+        const currentVal = getRuleValue(game, depId, allRulesData);
+        if (currentVal !== depValue) return false;
+    }
+    return true;
+}
+
+function getRuleValue(game, ruleId, allRulesData) {
+    const state = loadSettings();
+    const customVal = getRule(game, ruleId);
+    if (customVal !== undefined) return customVal;
+
+    const customDef = getDefaultRule(game, ruleId);
+    if (customDef !== undefined) return customDef;
+
+    // Find in data
+    if (allRulesData) {
+        for (const catData of Object.values(allRulesData)) {
+            const rule = catData.rules?.find(r => r.id === ruleId);
+            if (rule) return rule.default;
+        }
+    }
+    return undefined;
+}
+
 // Data Loading
 async function loadJSON(path) {
     // 互換性のため、.json のパスを .js の読み込みに変換
@@ -129,10 +176,7 @@ function createRuleControl(game, rule, isDefault = false) {
     wrapper.style.borderBottom = '1px dashed var(--border-color)';
 
     const headerDiv = document.createElement('div');
-    headerDiv.style.display = 'flex';
-    headerDiv.style.justifyContent = 'space-between';
-    headerDiv.style.alignItems = 'baseline';
-    headerDiv.style.marginBottom = '5px';
+    headerDiv.className = 'rule-header';
 
     const titleStr = document.createElement('strong');
     titleStr.textContent = rule.name;
@@ -141,10 +185,7 @@ function createRuleControl(game, rule, isDefault = false) {
     const detailLink = document.createElement('a');
     detailLink.href = rule.detail;
     detailLink.textContent = '詳細';
-    detailLink.style.fontSize = '0.8rem';
-    detailLink.style.border = '1px solid var(--accent-green)';
-    detailLink.style.padding = '2px 5px';
-    detailLink.style.borderRadius = '3px';
+    detailLink.className = 'btn-detail';
 
     headerDiv.appendChild(titleStr);
     headerDiv.appendChild(detailLink);
@@ -200,7 +241,30 @@ function createRuleControl(game, rule, isDefault = false) {
         
         controlDiv.appendChild(label);
         controlDiv.appendChild(select);
+    } else if (rule.type === 'number') {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = value;
+        input.style.width = '80px';
+        input.style.textAlign = 'right';
+        input.addEventListener('change', (e) => {
+            const val = parseInt(e.target.value, 10) || 0;
+            if (isDefault) setDefaultRule(game, rule.id, val);
+            else setRule(game, rule.id, val);
+            
+            // Trigger visibility update if needed
+            if (window.updateAllVisibilities) window.updateAllVisibilities();
+        });
+        
+        controlDiv.appendChild(label);
+        controlDiv.appendChild(input);
     }
+    
+    // Add change listeners to trigger visibility updates
+    const inputs = controlDiv.querySelectorAll('input, select');
+    inputs.forEach(i => i.addEventListener('change', () => {
+        if (window.updateAllVisibilities) window.updateAllVisibilities();
+    }));
     
     wrapper.appendChild(headerDiv);
     wrapper.appendChild(descDiv);

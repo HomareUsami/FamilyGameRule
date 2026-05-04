@@ -16,20 +16,51 @@
         ここで設定した内容は、この端末での基本のルール（ハウスルール）として保存されます。
     </p>
     <div id="settings-container"></div>
+
+    <div class="card" style="margin-top: 30px; text-align: center;">
+        <h3 style="margin-bottom: 15px;">設定が終わったら</h3>
+        <a href="current_rules.html" class="btn">現在のルールを確認する</a>
+        <a href="guide.html" class="btn btn-secondary">初心者向けガイドを見る</a>
+    </div>
+
     <script src="../../app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const game = getGameName();
             const catData = await loadJSON(`../../data/${game}_categories.json`);
             const container = document.getElementById('settings-container');
+            const allRulesData = {};
 
             if (catData && catData.categories) {
+                // Pre-load all data for visibility checks
                 for (const cat of catData.categories) {
-                    const data = await loadJSON(`../../data/${game}_${cat.id}.json`);
-                    if (data && data.rules && data.rules.length > 0) {
-                        const hasVisibleRules = data.rules.some(r => r.visible);
-                        if (!hasVisibleRules) continue;
+                    allRulesData[cat.id] = await loadJSON(`../../data/${game}_${cat.id}.json`);
+                }
 
+                window.updateAllVisibilities = async () => {
+                    const cards = container.querySelectorAll('.card');
+                    cards.forEach(card => {
+                        const controls = card.querySelectorAll('[data-rule-id]');
+                        let hasVisible = false;
+                        controls.forEach(async control => {
+                            const ruleId = control.getAttribute('data-rule-id');
+                            const isVisible = await checkRuleVisibility(game, ruleId, allRulesData);
+                            if (isVisible) {
+                                control.classList.remove('hidden');
+                                hasVisible = true;
+                            } else {
+                                control.classList.add('hidden');
+                            }
+                        });
+                        // Hide card if no visible rules
+                        // Note: this part is tricky because async check.
+                        // For now just hide rules.
+                    });
+                };
+
+                for (const cat of catData.categories) {
+                    const data = allRulesData[cat.id];
+                    if (data && data.rules && data.rules.length > 0) {
                         const card = document.createElement('div');
                         card.className = 'card';
                         
@@ -41,12 +72,16 @@
                         data.rules.forEach(rule => {
                             if (!rule.visible) return;
                             const control = createRuleControl(game, rule, true); // true for isDefault
+                            control.setAttribute('data-rule-id', rule.id);
                             card.appendChild(control);
                         });
 
                         container.appendChild(card);
                     }
                 }
+                
+                // Initial visibility check
+                setTimeout(window.updateAllVisibilities, 100);
             }
         });
     </script>
